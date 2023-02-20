@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Add New Movie";
  }
 
@@ -8,14 +7,25 @@
 <h1>Add a New Movie</h1>
 <div>
     <form method="post">
+        <div asp-validation-summary="All"></div>
+
         <label asp-for="MovieTitle">Movie Title:</label>
         <input asp-for="MovieTitle" required /><br />
 
-        <label asp-for="Category">Movie Category:</label>
-        <input asp-for="Category" required /><br />
+        <label asp-for="CategoryID">Movie Category:</label>
+        <select asp-for="CategoryID" required>
+            <option value="">Select a Category</option>
+            @foreach (Category c in ViewBag.Category)
+            {
+                <option value="@c.CategoryID">@c.CategoryName</option>
+            }
+        </select> <br />
+
+        <label asp-for="Director"> Director</label>
+        <input asp-for="Director" required /><br />
 
         <label asp-for="YearCreated">Year Made:</label>
-        <input asp-for="YearCreated" required type="number"/><br />
+        <input asp-for="YearCreated" required type="number" /><br />
 
         <label asp-for="Rating">Movie Rating:</label>
         <select asp-for="Rating" required>
@@ -34,12 +44,12 @@
         </select><br />
 
         <label asp-for="LentTo">Who did you lend this to?</label>
-        <input asp-for="LentTo"/><br />
+        <input asp-for="LentTo" /><br />
 
         <label asp-for="Notes">Notes:</label>
-        <input asp-for="Notes" maxlength="25"/>
-        <br/>
-        <br/>
+        <input asp-for="Notes" maxlength="25" />
+        <br />
+        <br />
         <button type="submit">Add Movie</button>
     </form>
 </div>

@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Delete Movie";
+}
+<!--This is my delete page using ASP actions-->
+@model NewMovie
+
+
+
+<h2>Confirm Movie Deletion</h2>
+<h3>Are you sure you want to delete @Model.MovieTitle?</h3>
+
+<form method="post" asp-action="Delete">
+    <button type ="submit">Delete</button>
+    <a asp-controller="Home" asp-action="list" class="button btn-primary">Cancel</a>
+
+    <input type="hidden" asp-for="MovieID"/>
+</form>

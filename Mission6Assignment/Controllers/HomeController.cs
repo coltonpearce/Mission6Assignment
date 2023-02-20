@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission6Assignment.Models;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mission6Assignment.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private AddMovieContext addMovieContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, AddMovieContext x)
+        public HomeController(AddMovieContext x)
         {
-            _logger = logger;
             addMovieContext = x;
         }
 
@@ -24,6 +25,8 @@ namespace Mission6Assignment.Controllers
         [HttpGet]
         public IActionResult AddNewMovie ()
         {
+            ViewBag.Category = addMovieContext.Categories.ToList();
+
             return View("NewMovie");
         }
 
@@ -43,20 +46,58 @@ namespace Mission6Assignment.Controllers
             }
         }
 
-        public IActionResult Privacy()
+        //this is creating a list of the possible choices that a person can select
+        public IActionResult List()
         {
-            return View();
+            var movies = addMovieContext.newMovies
+                .Include(x => x.Category)
+                .OrderBy(x => x.MovieTitle)
+                .ToList();
+
+            return View(movies);
         }
 
-        public IActionResult myPodcasts()
+        [HttpGet]
+        public IActionResult Edit (int movieid)
         {
-            return View("myPodcasts");
+            ViewBag.Category = addMovieContext.Categories.ToList();
+
+            var movie = addMovieContext.newMovies.Single(x => x.MovieID == movieid);
+
+            return View("NewMovie", movie);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost]
+        public IActionResult Edit(NewMovie nm)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (ModelState.IsValid)
+            {
+                addMovieContext.Update(nm);
+                addMovieContext.SaveChanges();
+                return RedirectToAction("list"); 
+            }
+            else //if entries are invalid
+            {
+                return View(nm);
+            }
+            
+        }
+
+
+        [HttpGet]
+        public IActionResult Delete (int movieid)
+        {
+            var movie = addMovieContext.newMovies.Single(x => x.MovieID == movieid);
+            return View(movie);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(NewMovie nm)
+        {
+            addMovieContext.newMovies.Remove(nm);
+            addMovieContext.SaveChanges();
+
+            return RedirectToAction("list");
         }
     }
 }

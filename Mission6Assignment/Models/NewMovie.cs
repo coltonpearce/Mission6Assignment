@@ -12,13 +12,29 @@ namespace Mission6Assignment.Models
         [Key]
         [Required]
         public int MovieID { get; set; }
-        public string Category { get; set; }
+
+        [Required]
         public string MovieTitle { get; set; }
+
+        [Required]
         public int YearCreated { get; set; }
+
+        [Required]
+        public string Director { get; set; }
+
         public string IsEdited { get; set; }
         public string LentTo {get; set; }
+
+
+        [MaxLength(25)]
         public string Notes { get; set; }
+
+        [Required]
         public string Rating { get; set; }
+
+        //foreign key creation
+        public int CategoryID { get; set; }
+        public Category Category { get; set; }
     }
 }
 
